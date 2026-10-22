@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.88"
 license = "Apache-2.0"
-description = "Native Rust source port of Pierre Highlights' 80 lexers"
-publish = false
+description = "Unofficial Rust port of Pierre Highlights"
+repository = "https://github.com/ozanvos/pierre-highlights-rs"
+readme = "README.md"
 
 [workspace]
 

@@ -4,11 +4,11 @@ Unofficial Rust port of [Pierre Highlights](https://github.com/pierrecomputer/pi
 
 ## Use
 
-The crate is unpublished. Add it from a sibling checkout:
+Add the crate to your project:
 
 ```toml
 [dependencies]
-pierre-highlights-rs = { path = "../pierre-highlights-rs" }
+pierre-highlights-rs = "0.1.0"
 ```
 
 ```rust
