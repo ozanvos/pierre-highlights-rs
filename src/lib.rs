@@ -1,4 +1,4 @@
-//! Native Rust port of Pierre Highlights 0.2.0. No Wasm runtime.
+//! Native Rust port of Pierre Highlights 0.4.0. No Wasm runtime.
 //! Reuse a [`Highlighter`] to retain allocation capacity. Tokens use UTF-8 byte
 //! offsets and Pierre token kinds; rendering and theme mapping are separate.
 mod catalog;
@@ -35,14 +35,14 @@ impl Highlighter {
     /// Returned records borrow the reusable arena until the next call.
     pub fn highlight(&mut self, language: Language, source: &str) -> Records<'_> {
         assert!(source.len() <= 64 * 1024 * 1024, "input exceeds 64 MiB");
-        let required = 65536 + source.len() + 96;
+        let required = 81920 + source.len() + 96;
         if self.engine.memory.len() < required {
             self.engine
                 .memory
                 .resize(required.next_multiple_of(65536), 0);
         }
-        let end = 65536 + source.len();
-        self.engine.memory[65536..end].copy_from_slice(source.as_bytes());
+        let end = 81920 + source.len();
+        self.engine.memory[81920..end].copy_from_slice(source.as_bytes());
         self.engine.memory[end..end + 32].fill(0);
         self.engine.memory[0] = language.id();
         self.engine.memory[1] = 3;

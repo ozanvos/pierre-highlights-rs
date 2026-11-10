@@ -1,2 +1,5 @@
 /target/
 .DS_Store
+/scripts/node_modules/
+/scripts/.cache/
+/scripts/__pycache__/

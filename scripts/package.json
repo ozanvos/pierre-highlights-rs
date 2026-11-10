@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "binaryen": "123.0.0",
+    "wabt": "1.0.37"
+  }
+}

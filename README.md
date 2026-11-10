@@ -1,6 +1,6 @@
 # pierre-highlights-rs
 
-Unofficial Rust port of [Pierre Highlights](https://github.com/pierrecomputer/pierre/tree/2d2498e77f31273811d96c3208d5605f449d2262/packages/highlights). Supports 80 languages plus plain text, with 73 token kinds and no runtime dependencies. Requires Rust 1.88+.
+Unofficial Rust port of [Pierre Highlights](https://github.com/pierrecomputer/pierre/tree/45e4f46a07060930cfa22fdc2b90e8e4752fc789/packages/highlights). Tracks Highlights 0.4.0. Supports 152 languages plus plain text, with 73 token kinds and no runtime dependencies. Requires Rust 1.88+.
 
 ## Use
 
@@ -8,7 +8,7 @@ Add the crate to your project:
 
 ```toml
 [dependencies]
-pierre-highlights-rs = "0.1.0"
+pierre-highlights-rs = "0.2.0"
 ```
 
 ```rust
@@ -34,7 +34,29 @@ just test  # Test native SIMD and scalar implementations
 just fmt   # Format Rust source
 ```
 
-The recipes use Cargo; `just` is optional. Maintain the Rust source directly. Tests check 22,148 saved reference cases from Pierre Highlights 0.2.0, plus language aliases, UTF-8 ranges, buffer reuse, and SIMD masks. The `scalar` feature selects the portable implementation.
+The recipes use Cargo; `just` is optional. Tests check 50,151 saved reference cases from Pierre Highlights 0.4.0, plus language aliases, UTF-8 ranges, buffer reuse, and SIMD masks. The `scalar` feature selects the portable implementation.
+
+## Upgrading from 0.1
+
+Language IDs now follow the Highlights 0.4.0 table and have changed. Persist language names, not numeric IDs; resolve names with `Language::from_name()`. The 73 token kinds and the Rust highlighting API are unchanged. New languages include PromQL, Lean, ABAP, Apex, and many others; see `Language::ALL` for the complete catalog.
+
+The crate remains a whole-buffer tokenizer. Upstream ANSI/HTML rendering, themes, streaming, and live-editing APIs are not exposed.
+
+## Updating the upstream port
+
+Generated source, static memory, aliases, and reference fixtures are checked in. Normal builds only need Rust. Maintenance additionally needs Python 3, Bun, npm, and a Pierre checkout:
+
+```sh
+git clone https://github.com/pierrecomputer/pierre.git /tmp/pierre
+git -C /tmp/pierre checkout 45e4f46a07060930cfa22fdc2b90e8e4752fc789
+npm ci --prefix scripts --ignore-scripts
+bun scripts/sync.ts /tmp/pierre/packages/highlights
+just check
+```
+
+The sync script verifies the package tree against `scripts/upstream.json`, uses upstream's WAT expansion and validation, then translates to native Rust. It retains the existing SIMD implementation and raw UTF-8 record adaptation (bypassing upstream's UTF-16 line conversion). Fixtures are evaluated independently with upstream Wasm, preserving the existing inputs and adding all-language samples, truncations, Unicode, malformed inputs, and deterministic fuzz cases. Unsupported translation instructions fail rather than silently falling back.
+
+When updating the pin, review changes to the memory layout, language/token IDs, Unicode identifier rules, and emitter adaptation as well as lexer behavior. Update the version/provenance comments and verify both native SIMD and scalar paths. Generated output is not hand-edited.
 
 ## License
 
