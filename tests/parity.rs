@@ -2,7 +2,7 @@ use pierre_highlights_rs::{Highlighter, Language};
 #[test]
 fn all_languages_match_pierre_byte_for_byte() {
     let mut h = Highlighter::new();
-    let mut covered = [false; 81];
+    let mut covered = [false; Language::ALL.len()];
     let mut fixtures = String::new();
     use std::io::Read;
     flate2::read::GzDecoder::new(&include_bytes!("data/parity.jsonl.gz")[..])
@@ -83,7 +83,10 @@ fn catalog_preserves_every_upstream_alias() {
     for language in Language::ALL {
         assert_eq!(Language::from_name(language.name()), Some(language));
     }
-    assert!(Language::from_id(81).is_none());
+    assert!(Language::from_id(Language::ALL.len() as u8).is_none());
     assert!(Language::from_name("not-a-language").is_none());
-    assert!(pierre_highlights_rs::TokenKind::from_id(73).is_none());
+    assert!(
+        pierre_highlights_rs::TokenKind::from_id(pierre_highlights_rs::TokenKind::ALL.len() as u8)
+            .is_none()
+    );
 }
